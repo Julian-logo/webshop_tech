@@ -11,7 +11,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     // something was posted
     $user_name = $_POST['user_name'];
     $password = $_POST['password'];
-    // important
+    // important test comment for github
 
 
     if ($_SERVER['REQUEST_METHOD'] == "POST") {
