@@ -49,6 +49,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
                   values ('$user_id','$user_name','$password', '$email', $verification_code, NULL)";
         mysqli_query($con, $query);
 
+
         // send email
         try {
             $result = $apiInstance->sendTransacEmail($sendSmtpEmail);

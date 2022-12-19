@@ -7,6 +7,8 @@ $dbname = "webshop";
 
 $con = mysqli_connect($dbhost, $dbuser, $dbpass, $dbname);
 
+include "navigationBar.php";
+
 if($_SERVER['REQUEST_METHOD'] == "POST") {
     // something was posted
     $user_name = $_POST['user_name'];
@@ -33,6 +35,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
                     if ($user_data['password'] === $password) {
 
                         $_SESSION['user_id'] = $user_data['user_id'];
+                        $_SESSION['user_name'] = $user_data['user_name'];
 
                     } else {
                         die("Password not correct");
@@ -40,7 +43,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
                     if ($user_data['email_verified_at'] == null)  {
                         header("Location: email-verification.php");
                     } else {
-                        header("Location: index.php");
+                        header("Location: homepage.php");
                     }
                 } else {
                     echo("wrong credentials, maybe create a new account?");
