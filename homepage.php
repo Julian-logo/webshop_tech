@@ -135,6 +135,38 @@ if(isset($_POST['deletePhoneData'])) {
     $res5 = mysqli_query($con, $queryDeletePicture);
 }
 
+if(isset($_POST['updatePhoneData'])) {
+    $brand = $_POST['brandView'];
+    $model = $_POST['modelView'];
+    $screenSize = $_POST['screenSizeView'];
+    $ramSize = $_POST['ramSizeView'];
+    $storageSize = $_POST['storageSizeView'];
+    $color = $_POST['colorView'];
+    $price = $_POST['priceView'];
+
+    $phone_id = checkForPhoneID();
+
+    $_SESSION['phone_id'] = $phone_id;
+    $user_id = $_SESSION['user_id'];
+
+    $query = "INSERT INTO phone (phone_id,user_id, brand, model, screenSize, ramSize, storageSize, color, price) 
+    VALUES ('$phone_id', '$user_id', '$brand', '$model', '$screenSize', '$ramSize', '$storageSize', '$color', '$price')
+    ON DUPLICATE KEY UPDATE brand = '$brand', model = '$model', screenSize = '$screenSize', ramSize = '$ramSize', storageSize = '$storageSize', color = '$color', price = '$price'";
+
+    $resultInsert = mysqli_query($con, $query);
+
+    if (mysqli_errno($con) > 0) {
+        // query failed, display error message
+        echo "Error: " . mysqli_error($con);
+    } else {
+        // query was successful, do something here
+        echo "<script>alert('Added record successfully')</script>";
+        header("Location: homepage.php");
+    }
+
+}
+
+
 ?>
 
 
@@ -187,7 +219,7 @@ if(isset($_POST['deletePhoneData'])) {
 
 <button id="showPhoneData" onclick="document.getElementById('uploadPhone').style.display='none',
     document.getElementById('uploadPicture').style.display='none';
-    document.getElementById('viewPhone').style.display='block';">Open Phone Form</button>
+    document.getElementById('viewPhone').style.display='block';">View or Update Phone Data</button>
 
 <button id="showPhoneData" onclick="document.getElementById('uploadPhone').style.display='none',
     document.getElementById('viewPhone').style.display='none';
@@ -215,13 +247,15 @@ if(isset($_POST['deletePhoneData'])) {
 <form name="viewPhone" id="viewPhone" method="post" style="display: none; width: 75%">
     <div id="loadPhone">
         <h2>These are the phone data you put down: </h2>
-        <input class="phoneName" type="text" name="brand" placeholder="Enter brand of phone" value="<?php echo(getData('brand'));?>">
-        <input class="phoneName" type="text" name="model" placeholder="Enter model of phone" value="<?php echo(getData('model'));?>">
-        <input class="phoneName" type="text" name="screenSize" placeholder="Enter screen size of the phone" value="<?php echo(getData('screenSize'));?>">
-        <input class="phoneName" type="text" name="ramSize" placeholder="Enter ram size of the phone" value="<?php echo(getData('ramSize'));?>">
-        <input class="phoneName" type="text" name="storageSize" placeholder="Enter storage size of the phone" value="<?php echo(getData('storageSize'));?>">
-        <input class="phoneName" type="text" name="color" placeholder="Enter the color of the phone" value="<?php echo(getData('color'));?>">
-        <input class="phoneName" type="text" name="price" placeholder="Enter the price of the phone" value="<?php echo(getData('price'));?>">
+        <input class="phoneName" type="text" name="brandView" placeholder="Enter brand of phone" value="<?php echo(getData('brand'));?>"> - Enter the brand of the phone, such as "Apple," "Samsung," or "Google."
+        <input class="phoneName" type="text" name="modelView" placeholder="Enter model of phone" value="<?php echo(getData('model'));?>"> - Enter the model of the phone, such as "iPhone 12," "Galaxy S21," or "Pixel 5."
+        <input class="phoneName" type="text" name="screenSizeView" placeholder="Enter screen size of the phone" value="<?php echo(getData('screenSize'));?>"> - Enter the screen size of the phone in inches, such as "6.1" or "6.7."
+        <input class="phoneName" type="text" name="ramSizeView" placeholder="Enter ram size of the phone" value="<?php echo(getData('ramSize'));?>"> - Enter the RAM size of the phone in gigabytes, such as "4" or "8."
+        <input class="phoneName" type="text" name="storageSizeView" placeholder="Enter storage size of the phone" value="<?php echo(getData('storageSize'));?>"> - Enter the storage size of the phone in gigabytes, such as "64" or "256."
+
+        <input class="phoneName" type="text" name="colorView" placeholder="Enter the color of the phone" value="<?php echo(getData('color'));?>"> - Enter the color of the phone, such as "black," "white," or "red."
+
+        <input class="phoneName" type="text" name="priceView" placeholder="Enter the price of the phone" value="<?php echo(getData('price'));?>"> - Enter the price of the phone in US dollars, such as "799" or "999."
 
         <?php
         $sql = "SELECT * FROM images ORDER BY id DESC";
@@ -247,6 +281,12 @@ if(isset($_POST['deletePhoneData'])) {
                        ?>
                 <div id="alb" style="display: flex; width: 50%;">
                     <img src="uploads/<?=$images['image_url']?>" style="width: 100%; margin-bottom: 20px; display: inline-block; float: left">
+                    <input id="deletePicture" type="button" name="deletePic" value="delete Picture" <?php
+                        if(isset($_POST['deletePic'])) {
+                            $imagePhoneId = $images['phone_id'];
+                            $sql = "DELETE FROM images WHERE phone_id = '$imagePhoneId'";
+                        }
+                    ?>>
                 </div>
 
             <?php }
