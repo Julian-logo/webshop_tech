@@ -9,6 +9,13 @@ $user_id = $_SESSION['user_id'];
 
 $getPhoneFromUser = "select * from phone where user_id = '$user_id' limit 1";
 
+$dbhost = "localhost";
+$dbuser = "root";
+$dbpass = "";
+$dbname = "webshop";
+
+$con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
+
 function getData($data) {
     $dbhost = "localhost";
     $dbuser = "root";
@@ -43,14 +50,16 @@ if(!empty($getPhoneFromUser)) {
 
         // checks if submit is clicked and uploads the phone data
 
-function checkForPhoneID() {
+function checkForPhoneID5() {
 
-    include "connection.php";
+    $dbhost = "localhost";
+    $dbuser = "root";
+    $dbpass = "";
+    $dbname = "webshop";
+
+    $con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
+
     $user_id = $_SESSION['user_id'];
-
-   // $getPhoneFromUser = "select * from phone where user_id = '$user_id' limit 1";
-    // $resultUser = mysqli_query($con, $getPhoneFromUser);
-    //$resultID = $resultUser['user_id'];
 
 
     $query = "SELECT * FROM phone WHERE user_id = '$user_id' ";
@@ -60,6 +69,28 @@ function checkForPhoneID() {
         return $row['phone_id'];
     } else {
         return random_num(20);
+    }
+}
+function checkForPhoneID() {
+    $dbhost = "localhost";
+    $dbuser = "root";
+    $dbpass = "";
+    $dbname = "webshop";
+
+    $con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
+
+    // Generate a new, unique phone_id value
+    $phone_id = random_num(20);
+
+    // Check if a phone record with this phone_id already exists in the table
+    $query = "SELECT * FROM phone WHERE phone_id = '$phone_id' ";
+    $result = mysqli_query($con, $query);
+    if (mysqli_num_rows($result) > 0) {
+        // A phone record with this phone_id already exists, so generate a new phone_id value and try again
+        return checkForPhoneID();
+    } else {
+        // No phone record with this phone_id exists, so return the new phone_id value
+        return $phone_id;
     }
 }
 
@@ -78,8 +109,8 @@ if (isset($_POST['uploadPhoneData'])) {
     $user_id = $_SESSION['user_id'];
 
     $query = "INSERT INTO phone (phone_id,user_id, brand, model, screenSize, ramSize, storageSize, color, price) 
-VALUES ('$phone_id', '$user_id', '$brand', '$model', '$screenSize', '$ramSize', '$storageSize', '$color', '$price')
-ON DUPLICATE KEY UPDATE brand = '$brand', model = '$model', screenSize = '$screenSize', ramSize = '$ramSize', storageSize = '$storageSize', color = '$color', price = '$price'";
+    VALUES ('$phone_id', '$user_id', '$brand', '$model', '$screenSize', '$ramSize', '$storageSize', '$color', '$price')
+    ON DUPLICATE KEY UPDATE brand = '$brand', model = '$model', screenSize = '$screenSize', ramSize = '$ramSize', storageSize = '$storageSize', color = '$color', price = '$price'";
 
     $resultInsert = mysqli_query($con, $query);
 
@@ -96,6 +127,13 @@ ON DUPLICATE KEY UPDATE brand = '$brand', model = '$model', screenSize = '$scree
     echo "alert('All fields are required!');";
 }
 
+if(isset($_POST['deletePhoneData'])) {
+    $queryDeleteData = "DELETE FROM phone WHERE user_id = '$user_id'";
+    $phone_id2 = checkForPhoneID();
+    $queryDeletePicture = "DELETE FROM images WHERE phone_id = '$phone_id2'";
+    $res4 = mysqli_query($con, $queryDeleteData);
+    $res5 = mysqli_query($con, $queryDeletePicture);
+}
 
 ?>
 
@@ -174,7 +212,7 @@ ON DUPLICATE KEY UPDATE brand = '$brand', model = '$model', screenSize = '$scree
 </form>
 
 
-<form name="viewPhone" id="viewPhone" method="post" onsubmit="return checkForm()" style="display: none; width: 75%">
+<form name="viewPhone" id="viewPhone" method="post" style="display: none; width: 75%">
     <div id="loadPhone">
         <h2>These are the phone data you put down: </h2>
         <input class="phoneName" type="text" name="brand" placeholder="Enter brand of phone" value="<?php echo(getData('brand'));?>">
@@ -200,7 +238,7 @@ ON DUPLICATE KEY UPDATE brand = '$brand', model = '$model', screenSize = '$scree
 
 
         while($ids = mysqli_fetch_assoc($res2)) {
-            $currentPhoneID = $ids['phone_id'];
+            $currentPhoneID = checkForPhoneID5();
             $sqlPhonePictureMatches = "SELECT * FROM images WHERE phone_id = '$currentPhoneID'";
             $res3 = mysqli_query($con, $sqlPhonePictureMatches);
         }
@@ -215,7 +253,7 @@ ON DUPLICATE KEY UPDATE brand = '$brand', model = '$model', screenSize = '$scree
         }?>
 
         <input id="button" type="submit" name="updatePhoneData" value="update Data" style="margin-top: 20px">
-        <input id="button" type="submit" name="deletePhoneData" value="delete Phone" style="margin-top: 20px">
+        <input id="button" type="submit" name="deletePhoneData" value="delete all phone data" style="margin-top: 20px">
 
     </div>
 </form>

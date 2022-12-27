@@ -3,6 +3,7 @@ session_start();
 // these lines check if user logged in
 include("connection.php");
 include("functions.php");
+include("navigationBar.php");
 
 // setting up phpMailer for verification of the mail
 use PHPMailer\PHPMailer\PHPMailer;
@@ -14,7 +15,7 @@ require 'vendor/autoload.php';
 include ('Mailin.php');
 
 require_once('vendor/autoload.php');
-$config = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
+$config = SendinBlue\Client\Configuration::getDefaultConfiguration()->setApiKey('api-key', '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');
 $apiInstance = new SendinBlue\Client\Api\TransactionalEmailsApi(
     new GuzzleHttp\Client(),
     $config

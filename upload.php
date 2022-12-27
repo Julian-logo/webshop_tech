@@ -7,6 +7,26 @@ $dbname = "webshop";
 
 $con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
 
+function checkForPhoneID2() {
+
+    include "connection.php";
+    $user_id = $_SESSION['user_id'];
+
+    // $getPhoneFromUser = "select * from phone where user_id = '$user_id' limit 1";
+    // $resultUser = mysqli_query($con, $getPhoneFromUser);
+    //$resultID = $resultUser['user_id'];
+
+
+    $query = "SELECT * FROM phone WHERE user_id = '$user_id' ";
+    $result = mysqli_query($con, $query);
+    if($result) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['phone_id'];
+    } else {
+        return random_num(20);
+    }
+}
+
 if (isset($_POST['submit']) && isset($_FILES['my_image'])) {
     echo "<pre>";
     print_r($_FILES['my_image']);
@@ -30,7 +50,7 @@ if (isset($_POST['submit']) && isset($_FILES['my_image'])) {
                 $new_img_name = uniqid("IMG-", true). '.' .$img_ex_lc;
                 $img_upload_path = 'uploads/'.$new_img_name;
                 move_uploaded_file($tmp_name, $img_upload_path);
-                $phone_id = $_SESSION['phone_id'];
+                $phone_id = checkForPhoneID2();
                 // Insert into Database
                 $sql = "INSERT INTO images(phone_id, image_url) 
 				        VALUES('$phone_id','$new_img_name')";
