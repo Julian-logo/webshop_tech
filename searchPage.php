@@ -23,8 +23,7 @@ if(isset($_POST['go'])) {
     $sql2 = "SELECT phone.*, images.image_url FROM phone INNER JOIN images ON phone.phone_id = images.phone_id WHERE phone.brand = '$searchInput' 
              OR phone.model = '$searchInput' OR phone.screenSize = '$searchInput' OR phone.ramSize = '$searchInput' OR phone.storageSize = '$searchInput'
              OR phone.color = '$searchInput' OR phone.price = '$searchInput' OR (phone.price < 300 AND '$searchInput' = 'cheap') 
-             OR (phone.screenSize > 7 AND '$searchInput' = 'gaming')
-             LIMIT $resultsPerPage OFFSET $offset";
+             OR (phone.screenSize > 1 AND '$searchInput' = 'gaming')";
     $res2 = mysqli_query($con, $sql2);
 }
 ?>
@@ -71,6 +70,7 @@ if(isset($_POST['go'])) {
     // Calculate the total number of pages
     $totalResults = mysqli_num_rows($res2);
     $totalPages = ceil($totalResults / $resultsPerPage);
+
 
     if ($totalPages > 1) {
         // Display the pagination links

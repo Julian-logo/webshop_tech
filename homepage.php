@@ -5,6 +5,27 @@ include("functions.php");
 include "navigationBar.php";
 include "upload.php";
 
+if(!isset($_SESSION['user_id'])) {
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Login</title>
+        <link href="styles.css" rel="stylesheet">
+    </head>
+    <body>
+
+    <div class="login-message">
+        <h1>Please log in to view this page</h1>
+        <p>To access this page, you must be logged in to your Account. If you don't have an account, you can <a href="signup.php">sign up</a> for one now.</p>
+        <a href="login.php" class="button">Log in</a>
+    </div>
+
+    </body>
+    </html>
+    <?php
+} else {
+
 $user_id = $_SESSION['user_id'];
 
 $getPhoneFromUser = "select * from phone where user_id = '$user_id' limit 1";
@@ -31,14 +52,15 @@ function getData($data) {
 
 
     $result = mysqli_query($con, $query);
-
-    if (!$result) {
-        // Query failed
-        echo "Error: " . mysqli_error($con);
-        return "";
-    }
     $phone_data = mysqli_fetch_assoc($result);
-    return $phone_data[$data];
+    if (!$result || empty($phone_data)) {
+        // Query failed
+        return "";
+    } else {
+
+        return $phone_data[$data];
+    }
+
 }
 
 
@@ -66,9 +88,10 @@ function checkForPhoneID5() {
 
     $query = "SELECT * FROM phone WHERE user_id = '$user_id' ";
     $result = mysqli_query($con, $query);
-    if($result) {
-        $row = mysqli_fetch_assoc($result);
-        return $row['phone_id'];
+    $row = mysqli_fetch_assoc($result);
+    if($result || !$row) {
+
+        return !empty($row) ? $row['phone_id'] : null;
     } else {
         return random_num(20);
     }
@@ -128,11 +151,13 @@ if (isset($_POST['uploadPhoneData'])) {
 }
 
 if(isset($_POST['deletePhoneData'])) {
-    $queryDeleteData = "DELETE FROM phone WHERE user_id = '$user_id'";
-    $phone_id2 = checkForPhoneID();
-    $queryDeletePicture = "DELETE FROM images WHERE phone_id = '$phone_id2'";
-    $res4 = mysqli_query($con, $queryDeleteData);
-    $res5 = mysqli_query($con, $queryDeletePicture);
+
+    $deleteData = "DELETE p, i FROM phone p
+    JOIN images i ON p.phone_id = i.phone_id
+    WHERE p.user_id = '$user_id'";
+
+    $res4 = mysqli_query($con, $deleteData);
+
 }
 
 if(isset($_POST['updatePhoneData'])) {
@@ -171,27 +196,25 @@ if(isset($_POST['updatePhoneData'])) {
 function deletePic() {
     global $deleteExecuted;
     include "connection.php";
-    $currentPhoneID = checkForPhoneID5();
-    $sqlPhonePictureMatches = "SELECT * FROM images WHERE phone_id = '$currentPhoneID'";
-    $res3 = mysqli_query($con, $sqlPhonePictureMatches);
-    $images = mysqli_fetch_assoc($res3);
-    if(!$deleteExecuted) {
-        if (isset($_POST['deletePic'])) {
-            $imagePhoneId = $images['phone_id'];
-            $imagePath = $images['image_path'];
-            // Delete the file from the "uploads" directory
-            unlink("uploads/$imagePath");
-            // Delete the record from the database
-            $sql = "DELETE FROM images WHERE phone_id = '$imagePhoneId'";
-            $result = mysqli_query($con, $sql);
-            // Refresh the page
-            echo '<script type="text/javascript">window.location.reload();</script>';
-            $deleteExecuted = true;
-        }
+    if($deleteExecuted) {
+        $currentPhoneID = checkForPhoneID5();
+        $sqlPhonePictureMatches = "SELECT * FROM images WHERE phone_id = '$currentPhoneID' limit 1";
+        $res3 = mysqli_query($con, $sqlPhonePictureMatches);
+        $images = mysqli_fetch_assoc($res3);
+
+            if (isset($_POST['deletePic'])) {
+                $imagePhoneId = $images['phone_id'];
+                $imagePath = $images['image_url'];
+                // Delete the file from the "uploads" directory
+                unlink("uploads/$imagePath");
+                // Delete the record from the database
+                $sql = "DELETE FROM images WHERE phone_id = '$imagePhoneId' limit 1";
+                $result = mysqli_query($con, $sql);
+
+            }
     }
-
-
 }
+
 
 ?>
 
@@ -283,6 +306,8 @@ function deletePic() {
 
         <input class="phoneName" type="text" name="priceView" placeholder="Enter the price of the phone" value="<?php echo(getData('price'));?>"> - Enter the price of the phone in US dollars, such as "799" or "999."
 
+
+
         <?php
         $sql = "SELECT * FROM images ORDER BY id DESC";
         $res = mysqli_query($con,  $sql);
@@ -303,14 +328,16 @@ function deletePic() {
             $res3 = mysqli_query($con, $sqlPhonePictureMatches);
         }
         if (mysqli_num_rows($res) > 0) {
+            $deleteExecuted = true;
             while($images = mysqli_fetch_assoc($res3)) {
                        ?>
                 <div id="alb" style="display: flex; width: 50%;">
                     <img id="alb-img" src="uploads/<?=$images['image_url']?>" style="width: 100%; margin-bottom: 20px; display: inline-block; float: left">
-                    <input id="deletePicture" type="submit" name="deletePic" value="delete Picture" <?php deletePic(); ?>>
+                    <input id="deletePicture" type="submit" name="deletePic" value="delete Picture" <?php deletePic(); $deleteExecuted = false;  ?>>
                 </div>
 
             <?php }
+            $deleteExecuted = false;
         }?>
 
         <input id="button" class="center" type="submit" name="updatePhoneData" value="update Data" style="margin-top: 20px">
@@ -338,3 +365,6 @@ function deletePic() {
 </div>
 </body>
 </html>
+
+
+<?php } ?>

@@ -1,7 +1,7 @@
 <nav class="nav">
     <ul>
-        <?php echo !empty($_SESSION['user_name']) ? "Username: " . $_SESSION['user_name'] : null; ?>
-        <li><?php echo !empty($_SESSION['user_id']) ? "Just for Debug UserID: " . $_SESSION['user_id'] : null ?></li>
+        <?php // echo !empty($_SESSION['user_name']) ? "Username: " . $_SESSION['user_name'] : null; ?>
+        <li><?php // echo !empty($_SESSION['user_id']) ? "Just for Debug UserID: " . $_SESSION['user_id'] : null ?></li>
         <li><?php function checkForPhoneID3() {
                 include "connection.php";
                 !empty($_SESSION['user_id']) ? $user_id = $_SESSION['user_id'] : null;
@@ -21,7 +21,7 @@
                     }
                 }
 
-            } echo "Just for Debug phoneID: ", checkForPhoneID3() ?></li>
+            } //echo "Just for Debug phoneID: ", checkForPhoneID3() ?></li>
         <?php
 
 

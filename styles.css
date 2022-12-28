@@ -394,3 +394,36 @@ input#button {
 input#button:hover {
     background-color: #FFB84D; /* slightly lighter orange color on hover */
 }
+.login-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.login-message h1 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.login-message p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.login-message a.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #ff9900;
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    border-radius: 5px;
+}
+
+.login-message a.button:hover {
+    background-color: #ffb600;
+}
