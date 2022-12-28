@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 $dbhost = "localhost";
 $dbuser = "root";
 $dbpass = "";
@@ -67,6 +67,4 @@ if (isset($_POST['submit']) && isset($_FILES['my_image'])) {
 
     }
 
-}else {
-    echo("fehler");
 }

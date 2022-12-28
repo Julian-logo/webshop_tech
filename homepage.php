@@ -16,6 +16,8 @@ $dbname = "webshop";
 
 $con = mysqli_connect($dbhost,$dbuser,$dbpass,$dbname);
 
+$deleteExecuted = false;
+
 function getData($data) {
     $dbhost = "localhost";
     $dbuser = "root";
@@ -123,8 +125,6 @@ if (isset($_POST['uploadPhoneData'])) {
         header("Location: homepage.php");
     }
 
-} else {
-    echo "alert('All fields are required!');";
 }
 
 if(isset($_POST['deletePhoneData'])) {
@@ -167,6 +167,32 @@ if(isset($_POST['updatePhoneData'])) {
 }
 
 
+// still doesnt work properly, only all pictures are getting deleted
+function deletePic() {
+    global $deleteExecuted;
+    include "connection.php";
+    $currentPhoneID = checkForPhoneID5();
+    $sqlPhonePictureMatches = "SELECT * FROM images WHERE phone_id = '$currentPhoneID'";
+    $res3 = mysqli_query($con, $sqlPhonePictureMatches);
+    $images = mysqli_fetch_assoc($res3);
+    if(!$deleteExecuted) {
+        if (isset($_POST['deletePic'])) {
+            $imagePhoneId = $images['phone_id'];
+            $imagePath = $images['image_path'];
+            // Delete the file from the "uploads" directory
+            unlink("uploads/$imagePath");
+            // Delete the record from the database
+            $sql = "DELETE FROM images WHERE phone_id = '$imagePhoneId'";
+            $result = mysqli_query($con, $sql);
+            // Refresh the page
+            echo '<script type="text/javascript">window.location.reload();</script>';
+            $deleteExecuted = true;
+        }
+    }
+
+
+}
+
 ?>
 
 
@@ -201,11 +227,11 @@ if(isset($_POST['updatePhoneData'])) {
 </head>
 <body>
 
-<h1>This is your Page</h1>
-<h2>Upload new phone:</h2>
+<h1 class="h1">This is your Page</h1>
+<h2 class="h2">Upload new phone:</h2>
 
 
-<button onclick="submitForm()">Open uploadPhone Form</button>
+<button class="button" style="display: inline-block; margin: auto;" onclick="submitForm()">Open uploadPhone Form</button>
 
 <script>
     function submitForm() {
@@ -217,11 +243,11 @@ if(isset($_POST['updatePhoneData'])) {
 
 </script>
 
-<button id="showPhoneData" onclick="document.getElementById('uploadPhone').style.display='none',
+<button id="showPhoneData" style="display: inline-block; margin: auto;" onclick="document.getElementById('uploadPhone').style.display='none',
     document.getElementById('uploadPicture').style.display='none';
     document.getElementById('viewPhone').style.display='block';">View or Update Phone Data</button>
 
-<button id="showPhoneData" onclick="document.getElementById('uploadPhone').style.display='none',
+<button id="showPhoneData" style="display: inline-block; margin: auto;" onclick="document.getElementById('uploadPhone').style.display='none',
     document.getElementById('viewPhone').style.display='none';
     document.getElementById('uploadPicture').style.display='block';">Upload Pictures</button>
 
@@ -280,20 +306,15 @@ if(isset($_POST['updatePhoneData'])) {
             while($images = mysqli_fetch_assoc($res3)) {
                        ?>
                 <div id="alb" style="display: flex; width: 50%;">
-                    <img src="uploads/<?=$images['image_url']?>" style="width: 100%; margin-bottom: 20px; display: inline-block; float: left">
-                    <input id="deletePicture" type="button" name="deletePic" value="delete Picture" <?php
-                        if(isset($_POST['deletePic'])) {
-                            $imagePhoneId = $images['phone_id'];
-                            $sql = "DELETE FROM images WHERE phone_id = '$imagePhoneId'";
-                        }
-                    ?>>
+                    <img id="alb-img" src="uploads/<?=$images['image_url']?>" style="width: 100%; margin-bottom: 20px; display: inline-block; float: left">
+                    <input id="deletePicture" type="submit" name="deletePic" value="delete Picture" <?php deletePic(); ?>>
                 </div>
 
             <?php }
         }?>
 
-        <input id="button" type="submit" name="updatePhoneData" value="update Data" style="margin-top: 20px">
-        <input id="button" type="submit" name="deletePhoneData" value="delete all phone data" style="margin-top: 20px">
+        <input id="button" class="center" type="submit" name="updatePhoneData" value="update Data" style="margin-top: 20px">
+        <input id="button" class="center" type="submit" name="deletePhoneData" value="delete all phone data" style="margin-top: 20px">
 
     </div>
 </form>
@@ -307,7 +328,7 @@ if(isset($_POST['updatePhoneData'])) {
 
     <input type="submit"
            name="submit"
-           value="Upload">
+           value="Upload" id="button">
 
 </form>
 

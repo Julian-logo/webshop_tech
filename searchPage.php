@@ -4,57 +4,126 @@ include("connection.php");
 include("functions.php");
 include("navigationBar.php");
 
+$resultsPerPage = 4; // Number of results to display per page
+$pageNumber = 1; // Default page number
 
-$currentUser = $_SESSION['user_id'];
-$query = "select * from phone where user_id = '$currentUser' limit 1";
-$result = mysqli_query($con, $query);
+// Check if the search form has been submitted
+if(isset($_POST['go'])) {
+    $searchInput = $_POST['search'];
 
+    // Check if a page number has been specified in the URL
+    if (isset($_GET['page'])) {
+        $pageNumber = (int)$_GET['page'];
+    }
 
+    // Calculate the offset based on the page number
+    $offset = ($pageNumber - 1) * $resultsPerPage;
 
+    // Fetch the search results from the database
+    $sql2 = "SELECT phone.*, images.image_url FROM phone INNER JOIN images ON phone.phone_id = images.phone_id WHERE phone.brand = '$searchInput' 
+             OR phone.model = '$searchInput' OR phone.screenSize = '$searchInput' OR phone.ramSize = '$searchInput' OR phone.storageSize = '$searchInput'
+             OR phone.color = '$searchInput' OR phone.price = '$searchInput' OR (phone.price < 300 AND '$searchInput' = 'cheap') 
+             OR (phone.screenSize > 7 AND '$searchInput' = 'gaming')
+             LIMIT $resultsPerPage OFFSET $offset";
+    $res2 = mysqli_query($con, $sql2);
+}
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Signup</title>
+    <title>Search Results</title>
     <link href="styles.css" rel="stylesheet">
 </head>
 <body>
-
-<form id="searchbar" style="css styles go here">
+<form id="searchbar" method="post">
     <label for="search">Search:</label>
-    <input type="text" id="search" name="search" style="css styles go here">
-    <button type="submit" style="">Go</button>
-    <button type="reset" onclick="document.getElementById('search').value = ''" style="width: 40%">Reset</button>
+    <input type="text" id="search" name="search" style="css styles go here" placeholder="enter brand or model or gaming or cheap or size ... of the phone you are searching for">
+    <button type="submit" name="go" style="">Go</button>
+    <button type="submit" id="resetButton" name="reset" onclick="document.getElementById('search').value = ''" >Reset Input</button>
 </form>
 
+<?php if (isset($_POST['go'])) { ?>
 <form id="phoneGrid">
+    <div id="phoneGrid" style="display: flex; flex-wrap: wrap;">
+        <?php
+        // Iterate over the search results and pair the corresponding image and phone data
+        while($data = mysqli_fetch_assoc($res2)) {
+            ?>
+            <div class="phone-item">
+                <img src="uploads/<?=$data['image_url']?>" alt="<?=$data['model']?>">
+                <p>Brand of the Phone: <?=$data['brand']?></p>
+                <p>Model: <?=$data['model']?></p>
+                <p>Screen Size: <?=$data['screenSize']?></p>
+                <p>RAM: <?=$data['ramSize']?></p>
+                <p>Storage: <?=$data['storageSize']?></p>
+                <p>Color: <?=$data['color']?></p>
+                <span class="price">$<?=$data['price']?></span>
+            </div>
+        <?php } ?>
+    </div>
+</form>
+
+
     <?php
 
-        $currentPhoneID = $_SESSION['phone_id'];
-        $sqlPhonePictureMatches = "SELECT * FROM images WHERE phone_id <> '$currentPhoneID'";
-        $res3 = mysqli_query($con, $sqlPhonePictureMatches);
-        $phoneData = "SELECT * FROM phone WHERE phone_id <> '$currentPhoneID'";
-        $res4 = mysqli_query($con, $phoneData)
 
+    // Calculate the total number of pages
+    $totalResults = mysqli_num_rows($res2);
+    $totalPages = ceil($totalResults / $resultsPerPage);
+
+    if ($totalPages > 1) {
+        // Display the pagination links
+        ?>
+        <div class="pagination">
+            <?php if ($pageNumber > 1) { ?>
+                <a href="?search=<?=urlencode($searchInput)?>&page=<?=$pageNumber - 1?>">&laquo;</a>
+            <?php } ?>
+            <?php for ($i = 1; $i <= $totalPages; $i++) { ?>
+                <a href="?search=<?=urlencode($searchInput)?>&page=<?=$i?>" <?php if ($i == $pageNumber) { echo 'class="active"'; } ?>><?=$i?></a>
+            <?php } ?>
+            <?php if ($pageNumber < $totalPages) { ?>
+                <a href="?search=<?=urlencode($searchInput)?>&page=<?=$pageNumber + 1?>">&raquo;</a>
+            <?php } ?>
+        </div>
+        <?php
+    }
+    ?>
+<?php } ?>
+
+<?php if(!isset($_POST['go']) || isset($_POST['reset'])) { ?>
+
+
+    <form id="phoneGrid">
+        <?php
+        // Fetch all phone and image records where the phone_id is not the current phone_id
+        !empty($_SESSION['phone_id']) ? $currentPhoneID = $_SESSION['phone_id'] : $currentPhoneID = "";
+        $sql = "SELECT phone.*, images.image_url FROM phone INNER JOIN images ON phone.phone_id = images.phone_id WHERE phone.phone_id <> '$currentPhoneID'";
+        $res = mysqli_query($con, $sql);
         ?>
         <div id="phoneGrid" style="display: flex; flex-wrap: wrap;">
             <?php
-        while($images = mysqli_fetch_assoc($res3)) {
-            while ($data = mysqli_fetch_assoc($res4)) {
-            ?>
-            <div style="width: 50%; margin-top: 50px">
-                <span name="phoneIDfromPhone"><?php echo "phoneID from phoneDB:", $data['phone_id']?></span>
-                <img src="uploads/<?=$images['image_url']?>" style="width: 100%; margin-bottom: 50px;">
-                <span name="phoneID"><?php echo "Phone ID from pictureDB:", $images['phone_id']?></span>
-            </div>
+            // Iterate over both results and pair the corresponding image and phone data
+            while($data = mysqli_fetch_assoc($res)) {
+                ?>
+                <div class="phone-item">
+                    <img src="uploads/<?=$data['image_url']?>" alt="<?=$data['model']?>">
+                    <p>Brand of the Phone: <?=$data['brand']?></p>
+                    <p>Model: <?=$data['model']?></p>
+                    <p>Screen Size: <?=$data['screenSize']?></p>
+                    <p>RAM: <?=$data['ramSize']?></p>
+                    <p>Storage: <?=$data['storageSize']?></p>
+                    <p>Color: <?=$data['color']?></p>
+                    <span class="price">$<?=$data['price']?></span>
+                </div>
+            <?php } ?>
 
-        <?php }
+        </div>
+    </form>
+<?php } ?>
 
-        }
-    ?>
-
-</form>
-</div>
 </body>
 </html>
+
+
+

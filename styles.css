@@ -7,14 +7,39 @@
     width: 100%;
 }
 
+h1 {
+    font-size: 36px;
+    font-weight: bold;
+    color: #000000; /* black color */
+    text-align: center;
+}
 
-#button{
+h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #000000; /* black color */
+    text-align: left;
+    margin-left: 20px;
+}
 
-    padding: 10px;
-    width: 250px;
+#button {
+    padding: 15px 32px;
+    width: 200px; /* adjust as needed */
     color: white;
-    background-color: lightblue;
+    background-color: #FF9900; /* orange color */
     border: none;
+    font-size: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+#button:hover {
+    background-color: #FFB84D; /* slightly lighter orange color on hover */
+}
+#button.center {
+    display: block;
+    margin: auto;
 }
 
 #box{
@@ -60,6 +85,22 @@ input[type="text"] {
     border: 2px solid #ccc;
     border-radius: 4px;
 }
+button {
+    background-color: #FF9900; /* orange color */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: #FFB84D; /* slightly lighter orange color on hover */
+}
 
 input[type="submit"] {
     width: 100%;
@@ -79,76 +120,277 @@ input[type="submit"]:hover {
 
 
 /* Navigation bar style */
-nav {
+.nav {
     display: flex;
-    height: 30px;
     justify-content: space-between;
     align-items: center;
-    background-color: #333;
-    color: #fff;
+    background-color: #222;
+    height: 60px;
 }
 
-nav ul {
+.nav ul {
     display: flex;
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-nav li {
-    margin: 0 10px;
+.nav li {
+    color: #fff;
+    font-size: 16px;
+    margin-right: 20px;
 }
 
-nav a {
+.nav a {
     color: #fff;
     text-decoration: none;
-    font-size: 18px;
-    font-weight: bold;
 }
 
-nav a:hover {
-    color: #ccc;
+.nav a:hover {
+    color: #f60;
+}
+
+.nav .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f60;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.nav .search-form {
+    display: flex;
+    align-items: center;
+}
+
+.nav .search-form input {
+    border: none;
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-size: 14px;
+    color: #222;
+    background-color: #fff;
+    margin-right: 10px;
+}
+
+.nav .search-form button {
+    border: none;
+    border-radius: 5px;
+    background-color: #f60;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 10px;
+    cursor: pointer;
 }
 
 #searchbar {
-    width: 60%; /* Set the width of the form to 50% of its parent element */
-    margin-top: 20px;
-    vertical-align: top;
-    horiz-align: left;
-
-
+    display: flex;
+    align-items: center;
+    background-color: #f2f2f2;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
 }
 
-#search {
-    width: 40%; /* Set the width of the search bar to 60% of its parent element */
-    padding: 12px 20px; /* Add some padding to the input field */
-    border: 1px solid #ccc; /* Add a border to the input field */
-    border-radius: 4px; /* Round the corners of the input field */
+#searchbar label {
+    color: #777;
+    font-size: 14px;
+    margin-right: 10px;
 }
 
-button[type="submit"] {
-    width: 20%; /* Set the width of the submit button to 20% of its parent element */
-    background-color: #4CAF50; /* Set the background color of the button */
-    color: white; /* Set the text color of the button */
-    padding: 14px 20px; /* Add some padding to the button */
-    border: none; /* Remove the border from the button */
-    border-radius: 4px; /* Round the corners of the button */
-    cursor: pointer; /* Add a cursor to the button */
+#searchbar input[type="text"] {
+    border: none;
+    border-radius: 5px;
+    padding: 8px 10px;
+    font-size: 14px;
+    color: #222;
+    background-color: #fff;
+    flex-grow: 1;
+}
+
+#searchbar button[type="submit"] {
+    border: none;
+    border-radius: 5px;
+    background-color: #f60;
+    color: #fff;
+    font-size: 14px;
+    padding: 8px 10px;
+    cursor: pointer;
+    margin-left: 10px;
 }
 
 button[type="submit"]:hover {
     background-color: #45a049; /* Change the background color on hover */
 }
 
-button[type="reset"] {
-    background-color: #f44336; /* Set the background color of the button */
-    color: white; /* Set the text color of the button */
-    padding: 14px 20px; /* Add some padding to the button */
-    border: none; /* Remove the border from the button */
-    border-radius: 4px; /* Round the corners of the button */
-    cursor: pointer; /* Add a cursor to the button */
+#searchbar button[type="reset"] {
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #777;
+    font-size: 14px;
+    padding: 8px 10px;
+    cursor: pointer;
+    margin-left: 10px;
 }
 
 button[type="reset"]:hover {
     background-color: #da190b; /* Change the background color on hover */
+}
+
+#phoneGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-gap: 20px;
+    padding: 20px;
+
+}
+
+#phoneGrid img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    object-fit: cover;
+
+}
+
+#phoneGrid span {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+#phoneGrid .phone-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    border: 3px solid #ddd;
+    border-radius: 5px;
+}
+
+#phoneGrid .phone-item img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+#phoneGrid .phone-item span {
+    margin-top: 10px;
+}
+
+#phoneGrid .phone-item h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#phoneGrid .phone-item p {
+    font-size: 14px;
+    color: #888;
+    margin-top: 10px;
+}
+
+#phoneGrid .phone-item .price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #f60;
+    margin-top: 10px;
+}
+
+#searchbar #resetButton {
+    background-color: #eee;
+    border: none;
+    color: #444;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: 4px;
+}
+
+#searchbar #resetButton:hover {
+    background-color: #ddd;
+}
+
+#searchbar #resetButton:active {
+    background-color: #ccc;
+}
+div#alb {
+    display: flex;
+    width: 50%;
+    margin: auto;
+    border: 1px solid #CCCCCC; /* light grey border */
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+
+div#alb img {
+    width: 100%;
+    margin-bottom: 20px;
+    border-radius: 4px 4px 0 0; /* rounded corners on top */
+}
+
+input#deletePicture {
+    background-color: #FF9900; /* orange color */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+input#deletePicture:hover {
+    background-color: #FFB84D; /* slightly lighter orange color on hover */
+}
+
+div#box {
+    width: 500px; /* adjust as needed */
+    margin: auto;
+    border: none; /* remove border */
+    box-sizing: border-box;
+    border-radius: 0; /* remove rounded corners */
+    padding: 20px;
+    background-color: #F7F7F7; /* light grey background color */
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+#login {
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+input#text {
+    padding: 12px 20px;
+    margin-bottom: 20px;
+    border: 1px solid #CCCCCC; /* light grey border */
+    border-radius: 4px;
+}
+
+input#button {
+    background-color: #FF9900; /* orange color */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+input#button:hover {
+    background-color: #FFB84D; /* slightly lighter orange color on hover */
 }
